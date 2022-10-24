@@ -1,5 +1,5 @@
 {
-    "name": "MotionSensor_v1",
+    "name": "step_counter",
     "description": "",
     "dependencies": {
         "core": "*",

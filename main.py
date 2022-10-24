@@ -1,12 +1,14 @@
 def on_gesture_shake():
     global steps
     steps += 1
+    basic.show_number(steps)
 input.on_gesture(Gesture.SHAKE, on_gesture_shake)
 
 elapsed = 0
+end_ts = 0
 end = 0
 start = 0
-logging = False
+start_ts = 0
 ms_s = 0
 steps = 0
 serial.write_string("\"acc ON\"")
@@ -17,18 +19,26 @@ radio.set_frequency_band(7)
 radio.set_transmit_power(7)
 
 def on_forever():
-    global ms_s, logging, start, steps, end, elapsed
+    global ms_s, start_ts, start, steps, end, end_ts, elapsed
     ms_s = input.acceleration(Dimension.STRENGTH)
     if input.is_gesture(Gesture.SHAKE) and input.button_is_pressed(Button.A):
-        logging = True
+        basic.show_icon(IconNames.YES)
+        radio.send_string("steps START")
+        start_ts = control.event_timestamp()
         start = input.running_time()
         steps = 0
-        basic.show_icon(IconNames.YES)
-        while ms_s > 1050 and logging:
-            if ms_s <= 1023 or input.button_is_pressed(Button.B):
+        while True:
+            radio.send_value("steps", steps)
+            basic.pause(5000)
+            if input.button_is_pressed(Button.B):
                 basic.show_icon(IconNames.NO)
-                logging = False
+                basic.clear_screen()
+                radio.send_string("steps END")
                 end = input.running_time()
+                end_ts = control.event_timestamp()
                 elapsed = end - start
+                radio.send_value("steps", steps)
+                radio.send_value("start", start_ts)
+                radio.send_value("end", end_ts)
                 break
 basic.forever(on_forever)
