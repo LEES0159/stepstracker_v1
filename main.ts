@@ -1,6 +1,5 @@
 input.onGesture(Gesture.Shake, function () {
     steps += 1
-    basic.showNumber(steps)
 })
 let elapsed = 0
 let end_ts = 0
@@ -17,7 +16,7 @@ radio.setFrequencyBand(7)
 radio.setTransmitPower(7)
 basic.forever(function () {
     ms_s = input.acceleration(Dimension.Strength)
-    if (input.isGesture(Gesture.Shake) && input.buttonIsPressed(Button.A)) {
+    if (input.isGesture(Gesture.Shake) || input.buttonIsPressed(Button.A)) {
         basic.showIcon(IconNames.Yes)
         radio.sendString("steps START")
         start_ts = control.eventTimestamp()
@@ -28,6 +27,7 @@ basic.forever(function () {
             basic.pause(5000)
             if (input.buttonIsPressed(Button.B)) {
                 basic.showIcon(IconNames.No)
+                basic.showNumber(steps)
                 basic.clearScreen()
                 radio.sendString("steps END")
                 end = input.runningTime()
