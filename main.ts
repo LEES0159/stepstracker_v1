@@ -35,6 +35,7 @@ basic.forever(function () {
                 elapsed = end - start
                 radio.sendValue("steps", steps)
                 radio.sendValue("start", start_ts)
+                radio.sendValue("elap", elapsed)
                 radio.sendValue("end", end_ts)
                 break;
             }
